@@ -3,108 +3,206 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d1312">
+<meta name="theme-color" content="#050d0c">
 <title>AB FILE TRANSFER QR</title>
-<link rel="icon" href="data:,">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23061412'/%3E%3Ctext x='32' y='42' font-family='Arial Black,Arial' font-weight='900' font-size='28' text-anchor='middle' fill='%2319f5c1'%3EAB%3C/text%3E%3C/svg%3E">
 <style>
+/* AB Neon Glass — single deliberate dark theme */
 :root{
-  --bg:#eef1f0; --panel:#ffffff; --ink:#14201d; --muted:#5b6a66; --line:#d2dad7;
-  --accent:#0d7f66; --accent-ink:#ffffff; --warn:#a15c00; --bad:#b3261e; --good:#0d7f66;
-  --track:#dde4e1;
+  --bg:#050d0c; --bg2:#081715;
+  --glass:rgba(18,44,40,.55); --glass-hi:rgba(28,66,60,.55);
+  --edge:rgba(120,255,220,.14); --edge-hi:rgba(25,245,193,.45);
+  --ink:#e6fff8; --muted:#8fb3aa; --dim:#5f817a;
+  --neon:#19f5c1; --neon2:#12c9f0; --neon-ink:#022019;
+  --good:#19f5c1; --warn:#ffc15e; --bad:#ff6b7d;
   --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Mono",Menlo,Consolas,monospace;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  color-scheme:light;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0d1312; --panel:#151d1b; --ink:#e2eae7; --muted:#8b9b96; --line:#26312e;
-    --accent:#3fcfa4; --accent-ink:#06241b; --warn:#e8a54a; --bad:#ff8a80; --good:#3fcfa4; --track:#222c29;
-    color-scheme:dark;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#0d1312; --panel:#151d1b; --ink:#e2eae7; --muted:#8b9b96; --line:#26312e;
-  --accent:#3fcfa4; --accent-ink:#06241b; --warn:#e8a54a; --bad:#ff8a80; --good:#3fcfa4; --track:#222c29;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{margin:0}
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans);-webkit-text-size-adjust:100%}
-.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:14px 40px;display:flex;flex-direction:column;gap:14px}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.brand{display:flex;align-items:baseline;gap:10px}
-.brand h1{margin:0;font:700 20px/1 var(--mono);letter-spacing:.02em}
-.brand span{color:var(--muted);font-size:13px}
-.tabs{display:inline-flex;background:var(--track);border-radius:10px;padding:3px;gap:3px}
-.tabs button{border:0;background:transparent;color:var(--muted);font:600 14px var(--sans);padding:8px 16px;border-radius:8px;cursor:pointer}
-.tabs button[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
+html,body{margin:0;min-height:100%}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bg)}
+body{
+  color:var(--ink);font:15px/1.45 var(--sans);-webkit-text-size-adjust:100%;
+  background:
+    radial-gradient(900px 520px at 12% -8%, rgba(25,245,193,.16), transparent 60%),
+    radial-gradient(700px 480px at 105% 18%, rgba(18,201,240,.12), transparent 60%),
+    radial-gradient(800px 600px at 50% 120%, rgba(25,245,193,.08), transparent 60%),
+    linear-gradient(180deg,var(--bg2),var(--bg));
+  background-attachment:fixed;
+}
+body::before{ /* faint scan grid */
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
+  background-image:linear-gradient(rgba(120,255,220,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(120,255,220,.05) 1px,transparent 1px);
+  background-size:28px 28px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%);
+}
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding-inline:16px;padding-block:18px 36px;display:flex;flex-direction:column;gap:16px}
+
+/* ---------- brand header ---------- */
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{
+  width:46px;height:46px;border-radius:13px;flex:none;display:grid;place-items:center;
+  background:linear-gradient(145deg,#0b2a25,#061412);border:1px solid var(--edge-hi);
+  box-shadow:0 0 0 1px rgba(25,245,193,.08) inset,0 0 22px rgba(25,245,193,.35);
+  font:900 19px/1 var(--sans);letter-spacing:-.02em;color:var(--neon);text-shadow:0 0 10px rgba(25,245,193,.8);
+}
+.brand-text{display:flex;flex-direction:column;gap:3px;min-width:0}
+.brand-text h1{margin:0;font:800 19px/1.05 var(--sans);letter-spacing:.06em;text-transform:uppercase;text-wrap:balance}
+.brand-text h1 em{font-style:normal;color:var(--neon);text-shadow:0 0 12px rgba(25,245,193,.55)}
+.brand-text span{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+.tabs{display:inline-flex;gap:4px;padding:4px;border-radius:14px;background:rgba(6,20,18,.7);border:1px solid var(--edge);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.tabs button{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--muted);font:700 13.5px var(--sans);letter-spacing:.04em;padding:9px 16px;border-radius:10px;cursor:pointer;transition:color .15s,background .15s,box-shadow .15s}
+.tabs button svg{width:16px;height:16px}
+.tabs button[aria-selected="true"]{color:var(--neon-ink);background:linear-gradient(135deg,var(--neon),var(--neon2));box-shadow:0 0 18px rgba(25,245,193,.45)}
+
+/* ---------- glass panels ---------- */
+.panel{
+  position:relative;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:14px;
+  background:linear-gradient(160deg,var(--glass-hi),var(--glass));
+  border:1px solid var(--edge);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);
+  box-shadow:0 20px 50px rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.06) inset;
+}
+.panel::before{content:"";position:absolute;left:18px;right:18px;top:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:.6}
+.sec-label{display:flex;align-items:center;gap:8px;font:700 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--neon)}
+.sec-label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--edge-hi),transparent)}
+
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
-label.f{display:flex;flex-direction:column;gap:4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);flex:1 1 120px}
-select,input[type=file]{font:14px var(--sans);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
-.btn{font:600 14px var(--sans);border-radius:8px;padding:10px 16px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;white-space:nowrap}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.drop{border:1.5px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--muted);font-size:14px;cursor:pointer}
-.drop.over{border-color:var(--accent);color:var(--ink)}
-.drop strong{color:var(--ink);word-break:break-all}
-.stage{background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;min-height:220px;overflow:hidden;position:relative}
+label.f{display:flex;flex-direction:column;gap:6px;font:600 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);flex:1 1 130px;min-width:0}
+select{
+  appearance:none;-webkit-appearance:none;width:100%;min-width:0;
+  font:600 14px var(--sans);color:var(--ink);
+  background:rgba(4,14,13,.75) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2319f5c1' stroke-width='1.8'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border:1px solid var(--edge);border-radius:11px;padding:11px 34px 11px 12px;
+}
+select option{background:#071816;color:var(--ink)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font:800 13.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;
+  border-radius:11px;padding:12px 18px;border:1px solid var(--edge);
+  background:rgba(4,14,13,.6);color:var(--ink);cursor:pointer;white-space:nowrap;text-decoration:none;
+  transition:transform .08s,box-shadow .15s,border-color .15s;
+}
+.btn:hover{border-color:var(--edge-hi)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{color:var(--neon-ink);border-color:transparent;background:linear-gradient(135deg,var(--neon),var(--neon2));box-shadow:0 0 22px rgba(25,245,193,.4),0 1px 0 rgba(255,255,255,.35) inset}
+.btn:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+button:focus-visible,select:focus-visible,a:focus-visible,.drop:focus-visible{outline:2px solid var(--neon);outline-offset:2px}
+
+.drop{
+  border:1.5px dashed rgba(25,245,193,.35);border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;
+  background:rgba(4,14,13,.45);color:var(--muted);font-size:14px;display:flex;flex-direction:column;align-items:center;gap:8px;
+  transition:border-color .15s,background .15s,box-shadow .15s;
+}
+.drop svg{width:30px;height:30px;color:var(--neon);filter:drop-shadow(0 0 8px rgba(25,245,193,.6))}
+.drop.over,.drop:hover{border-color:var(--neon);background:rgba(25,245,193,.06);box-shadow:0 0 24px rgba(25,245,193,.15) inset}
+.drop strong{color:var(--ink);font:600 14px var(--mono);word-break:break-all}
+.drop strong:empty{display:none}
+
+/* ---------- QR stage (must stay pure white for the camera) ---------- */
+.stage{
+  background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;min-height:240px;overflow:hidden;position:relative;
+  box-shadow:0 0 0 1px rgba(25,245,193,.5),0 0 40px rgba(25,245,193,.25);
+}
 .stage canvas{display:block;image-rendering:pixelated;image-rendering:crisp-edges}
-.stage .idle{color:#5b6a66;font:13px var(--mono);padding:30px;text-align:center}
-.stage:fullscreen{border-radius:0;width:100vw;height:100vh}
-.video-stage{background:#000;border-radius:12px;position:relative;overflow:hidden;aspect-ratio:4/3;max-width:100%}
+.stage .idle{color:#3e5e57;font:600 12.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:30px;text-align:center}
+.stage:fullscreen{border-radius:0;width:100vw;height:100vh;box-shadow:none}
+
+/* ---------- camera ---------- */
+.video-stage{background:#000;border-radius:16px;position:relative;overflow:hidden;aspect-ratio:4/3;max-width:100%;border:1px solid var(--edge);box-shadow:0 0 36px rgba(25,245,193,.12)}
 .video-stage video{width:100%;height:100%;object-fit:cover;display:block}
 .video-stage .guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.video-stage .guide div{width:min(90%,90vh);aspect-ratio:1;max-height:90%;border:2px solid rgba(63,207,164,.85);border-radius:8px;box-shadow:0 0 0 9999px rgba(0,0,0,.28)}
-.video-stage .msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#cfd8d5;font:13px var(--mono);text-align:center;padding:20px}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.stat{background:var(--panel);padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.stat b{font:500 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.stat span{font:600 15px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media (max-width:520px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.bar{height:8px;background:var(--track);border-radius:99px;overflow:hidden}
-.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .15s linear}
-.note{font-size:13px;color:var(--muted);margin:0}
-.note code{font-family:var(--mono);font-size:12px}
-.err{color:var(--bad);font-size:13px;margin:0}
-.result{border:1px solid var(--accent);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px}
-.result h3{margin:0;font:600 15px var(--sans);word-break:break-all}
-.result img{max-width:100%;max-height:320px;border-radius:6px;align-self:flex-start}
-.result a.btn{display:inline-block;text-decoration:none;text-align:center;align-self:flex-start}
-.pill{display:inline-block;font:600 11px var(--mono);padding:2px 8px;border-radius:99px;border:1px solid currentColor}
-.pill.ok{color:var(--good)} .pill.bad{color:var(--bad)} .pill.warn{color:var(--warn)}
-@media (prefers-reduced-motion: reduce){.bar i{transition:none}}
+.video-stage .guide div{
+  position:relative;width:min(90%,90vh);aspect-ratio:1;max-height:90%;
+  box-shadow:0 0 0 9999px rgba(0,8,7,.42);
+  background:
+    linear-gradient(var(--neon),var(--neon)) top left/28px 3px no-repeat,
+    linear-gradient(var(--neon),var(--neon)) top left/3px 28px no-repeat,
+    linear-gradient(var(--neon),var(--neon)) top right/28px 3px no-repeat,
+    linear-gradient(var(--neon),var(--neon)) top right/3px 28px no-repeat,
+    linear-gradient(var(--neon),var(--neon)) bottom left/28px 3px no-repeat,
+    linear-gradient(var(--neon),var(--neon)) bottom left/3px 28px no-repeat,
+    linear-gradient(var(--neon),var(--neon)) bottom right/28px 3px no-repeat,
+    linear-gradient(var(--neon),var(--neon)) bottom right/3px 28px no-repeat;
+  filter:drop-shadow(0 0 6px rgba(25,245,193,.8));
+}
+.video-stage .guide div::after{content:"";position:absolute;left:6%;right:6%;height:2px;top:50%;background:linear-gradient(90deg,transparent,var(--neon),transparent);opacity:.7;animation:scan 2.4s ease-in-out infinite}
+@keyframes scan{0%,100%{transform:translateY(-160%)}50%{transform:translateY(160%)}}
+.video-stage .msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--neon);font:700 12.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:20px;text-shadow:0 0 10px rgba(25,245,193,.6)}
+.video-stage .msg:empty{display:none}
+
+/* ---------- telemetry ---------- */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.stat{background:rgba(4,14,13,.55);border:1px solid var(--edge);border-radius:12px;padding:9px 11px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.stat b{font:600 9.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.stat span{font:700 15px/1.1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat.hot span{color:var(--neon);text-shadow:0 0 10px rgba(25,245,193,.5)}
+@media (max-width:540px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.bar{height:10px;background:rgba(4,14,13,.7);border:1px solid var(--edge);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--neon2),var(--neon));box-shadow:0 0 14px rgba(25,245,193,.7);transition:width .15s linear}
+
+.note{font-size:12.5px;color:var(--muted);margin:0;line-height:1.55}
+.err{color:var(--bad);font-size:13px;margin:0;padding:10px 12px;border:1px solid rgba(255,107,125,.35);border-radius:10px;background:rgba(255,107,125,.07)}
+.result{border:1px solid var(--edge-hi);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;background:rgba(25,245,193,.06);box-shadow:0 0 30px rgba(25,245,193,.12) inset}
+.result h3{margin:0;font:700 15px var(--mono);word-break:break-all;color:var(--ink)}
+.result img{max-width:100%;max-height:320px;border-radius:10px;align-self:flex-start;border:1px solid var(--edge)}
+.result a.btn{align-self:flex-start}
+.pill{display:inline-block;font:700 10.5px var(--mono);letter-spacing:.1em;padding:3px 9px;border-radius:99px;border:1px solid currentColor;margin-right:6px}
+.pill.ok{color:var(--good);box-shadow:0 0 10px rgba(25,245,193,.3)} .pill.bad{color:var(--bad)} .pill.warn{color:var(--warn)}
+
+footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font:600 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding-inline:4px}
+footer b{color:var(--neon);font-weight:800}
+
+@media (prefers-reduced-motion: reduce){
+  .bar i,.tabs button,.btn{transition:none}
+  .video-stage .guide div::after{animation:none;display:none}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><h1>LightPipe</h1><span>fountain-coded QR file transfer</span></div>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">AB</div>
+      <div class="brand-text">
+        <h1>AB <em>File Transfer</em> QR</h1>
+        <span>Offline · No network · No pairing</span>
+      </div>
+    </div>
     <div class="tabs" role="tablist">
-      <button id="tab-send" role="tab" aria-selected="true">Send</button>
-      <button id="tab-recv" role="tab" aria-selected="false">Receive</button>
+      <button id="tab-send" role="tab" aria-selected="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Send</button>
+      <button id="tab-recv" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>Receive</button>
     </div>
   </header>
 
   <!-- ================= SEND ================= -->
   <section id="view-send" class="panel">
-    <div id="drop" class="drop" tabindex="0">Tap to choose a file, or drop one here<br><strong id="fname"></strong></div>
+    <div class="sec-label">Transmitter</div>
+    <div id="drop" class="drop" tabindex="0" role="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 17v-6M9 14l3-3 3 3"/></svg>
+      <span>Tap to choose a file, or drop one here</span>
+      <strong id="fname"></strong>
+    </div>
     <input id="file" type="file" hidden>
     <div class="row">
-      <label class="f">QR version
+      <label class="f">QR density
         <select id="ver">
-          <option value="15">15 · 77×77 · 544 B</option>
-          <option value="20">20 · 97×97 · 812 B</option>
-          <option value="25">25 · 117×117 · 1216 B</option>
-          <option value="30" selected>30 · 137×137 · 1660 B</option>
-          <option value="35">35 · 157×157 · 2214 B</option>
-          <option value="40">40 · 177×177 · 2844 B</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="25">25</option>
+          <option value="30" selected>30</option>
+          <option value="35">35</option>
+          <option value="40">40</option>
         </select>
       </label>
-      <label class="f">Frame rate
+      <label class="f">Frames / sec
         <select id="fps">
           <option>6</option><option>10</option><option>15</option><option selected>20</option><option>30</option><option>45</option><option>60</option>
         </select>
@@ -112,22 +210,23 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
       <button id="go" class="btn primary" disabled>Start</button>
       <button id="fs" class="btn" disabled>Fullscreen</button>
     </div>
-    <div id="stage" class="stage"><div class="idle">Pick a file to start transmitting</div></div>
+    <div id="stage" class="stage"><div class="idle">Choose a file to start transmitting</div></div>
     <div class="stats">
-      <div class="stat"><b>Shown fps</b><span id="s-fps">–</span></div>
+      <div class="stat hot"><b>Shown fps</b><span id="s-fps">–</span></div>
       <div class="stat"><b>Frame</b><span id="s-frame">–</span></div>
-      <div class="stat"><b>Blocks (K)</b><span id="s-k">–</span></div>
-      <div class="stat"><b>Block len</b><span id="s-bl">–</span></div>
-      <div class="stat"><b>Raw rate</b><span id="s-rate">–</span></div>
+      <div class="stat"><b>Blocks</b><span id="s-k">–</span></div>
+      <div class="stat"><b>Per frame</b><span id="s-bl">–</span></div>
+      <div class="stat hot"><b>Raw rate</b><span id="s-rate">–</span></div>
       <div class="stat"><b>Best case</b><span id="s-min">–</span></div>
       <div class="stat"><b>Underruns</b><span id="s-under">0</span></div>
       <div class="stat"><b>Session</b><span id="s-sess">–</span></div>
     </div>
-    <p class="note">First K frames carry the raw blocks, everything after is repair data. The receiver can start at any point and still finish. Max brightness, and keep the frame rate at or below half the receiving camera's fps.</p>
+    <p class="note">Screen brightness to max. Start at density 30 and 20 fps, then raise density to 40. Keep frames per second at or below the receiver's decode fps.</p>
   </section>
 
   <!-- ================= RECEIVE ================= -->
   <section id="view-recv" class="panel" hidden>
+    <div class="sec-label">Receiver</div>
     <div class="row">
       <label class="f">Decoder
         <select id="engine">
@@ -152,17 +251,19 @@ button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{ou
     <div class="bar"><i id="rx-bar"></i></div>
     <div class="stats">
       <div class="stat"><b>Capture fps</b><span id="r-cfps">–</span></div>
-      <div class="stat"><b>Decode fps</b><span id="r-dfps">–</span></div>
-      <div class="stat"><b>Progress</b><span id="r-prog">–</span></div>
-      <div class="stat"><b>Goodput</b><span id="r-good">–</span></div>
+      <div class="stat hot"><b>Decode fps</b><span id="r-dfps">–</span></div>
+      <div class="stat hot"><b>Progress</b><span id="r-prog">–</span></div>
+      <div class="stat hot"><b>Speed</b><span id="r-good">–</span></div>
       <div class="stat"><b>New / dup</b><span id="r-nd">–</span></div>
       <div class="stat"><b>Dropped</b><span id="r-drop">0</span></div>
       <div class="stat"><b>Elapsed</b><span id="r-el">–</span></div>
       <div class="stat"><b>Engine</b><span id="r-eng">–</span></div>
     </div>
     <div id="result" class="result" hidden></div>
-    <p class="note">Fill the green square with the sender's code. Tilt slightly to kill screen glare. Dropped frames only cost time: any ~K distinct packets rebuild the file.</p>
+    <p class="note">Fill the frame with the sender's code and hold steady. Tilt slightly if there's glare. Missed frames only cost time, never data.</p>
   </section>
+
+  <footer><span><b>AB</b> Tools</span><span>aamirbuneri.com</span></footer>
 </div>
 
 <!-- Library and worker sources, stitched into Blob workers at runtime (no network needed). -->
